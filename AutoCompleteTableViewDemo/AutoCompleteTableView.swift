@@ -21,7 +21,11 @@ import UIKit
     var predictionArray : [String] = []
     
     var textField : UITextField?
+          private var kvoContextOfScrollView: UInt8 = 1
     var scrollViewOfTextField : UIScrollView?
+   
+
+    
     var autoCompleteTableViewDelegate : AutoCompleteTableViewDelegate?
      //MARK: CLC : Class Life Cycle
     override init(frame: CGRect, style: UITableViewStyle)
@@ -57,6 +61,8 @@ import UIKit
         // turn off standard correction
         textfield!.autocorrectionType = UITextAutocorrectionType.No;
         
+     
+        
          hideSelf()
     }
     
@@ -68,11 +74,50 @@ import UIKit
         super.awakeFromNib()
     }
 
-   
+    deinit {
+        self.scrollViewOfTextField?.removeObserver(self, forKeyPath: "miles")
+    }
 
     
     //MARK: -  Helper Function
     
+      override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>)
+      {
+        if context == &kvoContextOfScrollView
+        {
+            if(keyPath! == "contentOffset")
+            {
+                
+                if((self.textField) != nil){
+                    updateFrameOfTableView()
+                }
+                
+            }
+          
+
+                
+                
+            
+        }
+    }
+    
+    
+ 
+    func setScrollView(scrollView : UIScrollView?){
+        self.scrollViewOfTextField = scrollView
+        self.scrollViewOfTextField?.addObserver(self, forKeyPath: "contentOffset",
+            options:[NSKeyValueObservingOptions.New,NSKeyValueObservingOptions.Old], context: &kvoContextOfScrollView)
+        
+    }
+    
+    func updateFrameOfTableView()
+    {
+        let frame : CGRect = (textField!.window?.subviews[0].convertRect(textField!.frame, fromView: self.textField!.superview))!
+        self.frame = CGRectMake(10, frame.origin.y + frame.size.height, (UIScreen.mainScreen().bounds.size.width - 20), 90);
+        
+        
+     
+    }
     func showSelf()
     {
         self.hidden = false;

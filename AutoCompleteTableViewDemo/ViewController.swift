@@ -31,7 +31,7 @@ class ViewController: UIViewController,UITextFieldDelegate,AutoCompleteTableView
         auto.layer.borderWidth = 2.0;
         auto.layer.cornerRadius = 12.0;
         auto.autoCompleteTableViewDelegate = self;
-        auto.scrollViewOfTextField = self.scrollView 
+        auto.setScrollView(self.scrollView)
         
     
     return auto
