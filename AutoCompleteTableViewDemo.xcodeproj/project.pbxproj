@@ -12,7 +12,7 @@
 		10321C741C630EAF000ABEA4 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 10321C721C630EAF000ABEA4 /* Main.storyboard */; };
 		10321C761C630EAF000ABEA4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 10321C751C630EAF000ABEA4 /* Assets.xcassets */; };
 		10321C791C630EAF000ABEA4 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 10321C771C630EAF000ABEA4 /* LaunchScreen.storyboard */; };
-		10321C821C631119000ABEA4 /* AutoCompleteTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10321C811C631119000ABEA4 /* AutoCompleteTableView.swift */; settings = {ASSET_TAGS = (); }; };
+		10321C821C631119000ABEA4 /* AutoCompleteTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10321C811C631119000ABEA4 /* AutoCompleteTableView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */

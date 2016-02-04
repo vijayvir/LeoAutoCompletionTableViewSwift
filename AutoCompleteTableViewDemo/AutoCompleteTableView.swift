@@ -22,8 +22,9 @@ import UIKit
     
     var textField : UITextField?
           private var kvoContextOfScrollView: UInt8 = 1
-    var scrollViewOfTextField : UIScrollView?
-   
+   private var scrollViewOfTextField : UIScrollView?
+    var showHighLightedText :(show:Bool , HighLightedColor : UIColor , normalColor : UIColor) = (true, UIColor.blueColor() ,UIColor.blackColor())
+    
 
     
     var autoCompleteTableViewDelegate : AutoCompleteTableViewDelegate?
@@ -93,10 +94,6 @@ import UIKit
                 }
                 
             }
-          
-
-                
-                
             
         }
     }
@@ -190,11 +187,46 @@ import UIKit
      func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cellIdentifier = "autocompleteCellIdentifier"
         var cell = tableView.dequeueReusableCellWithIdentifier(cellIdentifier)
-        if cell == nil{
+        if cell == nil
+        {
             cell = UITableViewCell(style: .Default, reuseIdentifier: cellIdentifier)
         }
         
-        cell?.textLabel?.text = ("\(predictionArray[indexPath.row])")
+        
+        
+    if(self.textField?.text?.characters.count>0)
+    {
+        if(showHighLightedText.show == true)
+        {
+            cell?.textLabel?.text = ("\(predictionArray[indexPath.row])")
+            
+            let initialtext =   "\(predictionArray[indexPath.row])"
+            
+           cell?.textLabel?.textColor = showHighLightedText.normalColor
+            
+            let attrString: NSMutableAttributedString = NSMutableAttributedString(string: initialtext)
+            
+            let range: NSRange = (initialtext as NSString).rangeOfString((self.textField?.text!)! , options: [NSStringCompareOptions.CaseInsensitiveSearch])
+            
+            
+             attrString.addAttribute(NSForegroundColorAttributeName, value: showHighLightedText.HighLightedColor, range: range)
+            
+            
+            cell!.textLabel?.attributedText = attrString
+        }
+        
+        else{
+            cell?.textLabel?.text = ("\(predictionArray[indexPath.row])")
+            cell?.textLabel?.textColor = showHighLightedText.normalColor
+        }
+     
+    }
+    else
+    {
+        
+
+    }
+       
         return cell!
     }
     

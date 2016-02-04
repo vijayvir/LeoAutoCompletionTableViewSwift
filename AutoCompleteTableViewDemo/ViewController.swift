@@ -32,7 +32,7 @@ class ViewController: UIViewController,UITextFieldDelegate,AutoCompleteTableView
         auto.layer.cornerRadius = 12.0;
         auto.autoCompleteTableViewDelegate = self;
         auto.setScrollView(self.scrollView)
-        
+        auto.showHighLightedText = (true,UIColor.redColor(), UIColor.grayColor())
     
     return auto
   
