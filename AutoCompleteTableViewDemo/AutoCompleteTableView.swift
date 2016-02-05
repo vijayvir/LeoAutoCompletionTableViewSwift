@@ -255,8 +255,10 @@ import UIKit
            
             
             
-            let initialString = self.textField?.text as String!
-            
+            guard  let initialString = self.textField?.text as String! else
+          {
+            return
+            }
             var initialStringArr = initialString.componentsSeparatedByString(autoMultipleSelection.separatedBy)
             
             let lastName: String? = initialStringArr.count > 0 ? initialStringArr[initialStringArr.count-1] : initialStringArr[0]
