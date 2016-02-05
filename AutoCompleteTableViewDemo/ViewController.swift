@@ -33,7 +33,9 @@ class ViewController: UIViewController,UITextFieldDelegate,AutoCompleteTableView
         auto.autoCompleteTableViewDelegate = self;
         auto.setScrollView(self.scrollView)
         auto.showHighLightedText = (true,UIColor.redColor(), UIColor.grayColor())
-    
+        auto.autoMultipleSelection=(true,",")
+  
+        
     return auto
   
     }
@@ -46,12 +48,11 @@ class ViewController: UIViewController,UITextFieldDelegate,AutoCompleteTableView
     
     
         // set observer on textField in tableviewClass
-        fruitNameTF.addTarget(self.autoCompleteTVFruitNames, action: "textFieldValueChanged:", forControlEvents: UIControlEvents.EditingChanged)
-          animalNamesTF.addTarget(self.autoCompleteTVAnimalsNames, action: "textFieldValueChanged:", forControlEvents: UIControlEvents.EditingChanged)
+        fruitNameTF.addTarget(self.autoCompleteTVFruitNames, action: "autoTextFieldValueChanged:", forControlEvents: UIControlEvents.EditingChanged)
         
-        
-
-        
+       
+            
+         animalNamesTF.addTarget(self.autoCompleteTVAnimalsNames, action: "textFieldValueChanged:", forControlEvents: UIControlEvents.EditingChanged)
    
     }
 

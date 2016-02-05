@@ -22,13 +22,17 @@ import UIKit
     
     var textField : UITextField?
           private var kvoContextOfScrollView: UInt8 = 1
-   private var scrollViewOfTextField : UIScrollView?
+    private var scrollViewOfTextField : UIScrollView?
+    
     var showHighLightedText :(show:Bool , HighLightedColor : UIColor , normalColor : UIColor) = (true, UIColor.blueColor() ,UIColor.blackColor())
     
-
+    var autoMultipleSelection : (Allow:Bool , separatedBy: String) = (true,",")
+    
+    var multipleSetioinArr : [String] = []
     
     var autoCompleteTableViewDelegate : AutoCompleteTableViewDelegate?
-     //MARK: CLC : Class Life Cycle
+    
+    //MARK: CLC : Class Life Cycle
     override init(frame: CGRect, style: UITableViewStyle)
     {
     
@@ -62,7 +66,11 @@ import UIKit
         // turn off standard correction
         textfield!.autocorrectionType = UITextAutocorrectionType.No;
         
+        
      
+        textfield!.addTarget(self , action: "autoTextFieldEditingDidEnd:", forControlEvents: UIControlEvents.EditingDidEnd)
+       
+        textfield!.addTarget(self , action: "autoTextFieldEditingDidBegin:", forControlEvents: UIControlEvents.EditingDidBegin)
         
          hideSelf()
     }
@@ -72,6 +80,7 @@ import UIKit
         super.init(coder: aDecoder)
     }
      override func awakeFromNib() {
+        
         super.awakeFromNib()
     }
 
@@ -89,7 +98,8 @@ import UIKit
             if(keyPath! == "contentOffset")
             {
                 
-                if((self.textField) != nil){
+                if((self.textField) != nil)
+                {
                     updateFrameOfTableView()
                 }
                 
@@ -101,7 +111,9 @@ import UIKit
     
  
     func setScrollView(scrollView : UIScrollView?){
+       
         self.scrollViewOfTextField = scrollView
+       
         self.scrollViewOfTextField?.addObserver(self, forKeyPath: "contentOffset",
             options:[NSKeyValueObservingOptions.New,NSKeyValueObservingOptions.Old], context: &kvoContextOfScrollView)
         
@@ -110,9 +122,8 @@ import UIKit
     func updateFrameOfTableView()
     {
         let frame : CGRect = (textField!.window?.subviews[0].convertRect(textField!.frame, fromView: self.textField!.superview))!
+       
         self.frame = CGRectMake(10, frame.origin.y + frame.size.height, (UIScreen.mainScreen().bounds.size.width - 20), 90);
-        
-        
      
     }
     func showSelf()
@@ -124,37 +135,59 @@ import UIKit
     {
         self.hidden = true;
     }
+    
     //MARK: - TextField Delegate
-    func textFieldValueChanged(textFieldTemp: UITextField)
+    func autoTextFieldValueChanged(textFieldTemp: UITextField)
     {
         self.textField = textFieldTemp
-     let frame : CGRect = (textFieldTemp.window?.subviews[0].convertRect(textFieldTemp.frame, fromView: textFieldTemp.superview))!
-        self.frame = CGRectMake(10, frame.origin.y + frame.size.height, (UIScreen.mainScreen().bounds.size.width - 20), 90);
-       let currentString  = textFieldTemp.text as String!
-
-
         
-      if(currentString.characters.count > 0)
+        let frame : CGRect = (textFieldTemp.window?.subviews[0].convertRect(textFieldTemp.frame, fromView: textFieldTemp.superview))!
+        
+        self.frame = CGRectMake(10, frame.origin.y + frame.size.height, (UIScreen.mainScreen().bounds.size.width - 20), 90);
+        
+        
+       var currentString  = textFieldTemp.text as String!
+   
+        if(autoMultipleSelection.Allow == true)
+        {
+            
+            let initialString = currentString as String!
+            
+            var initialStringArr = initialString.componentsSeparatedByString(autoMultipleSelection.separatedBy)
+            
+            let lastName: String? = initialStringArr.count > 0 ? initialStringArr[initialStringArr.count-1] : initialStringArr[0]
+            
+             currentString = lastName as String!
+         
+        }
+        else
+        {
+            currentString  = textFieldTemp.text as String!
+        }
+        
+      if(currentString?.characters.count > 0)
       {
         
         showSelf()
+        
         var tempArray :[String] = []
         
         
         self.predictionArray =   (autoCompleteTableViewDelegate?.autoCompleteTableView!(self, didAddItem: "fdsfds")) ?? []
+        
         for tempVale : String   in self.predictionArray
         {
             
-            //            if string.rangeOfString("Swift") != nil{
-            //                println("exists")
-            //            }
+         
             
-            if tempVale.lowercaseString.rangeOfString(currentString!) != nil
+            
+             let range: NSRange = (tempVale as NSString).rangeOfString(currentString , options: [NSStringCompareOptions.CaseInsensitiveSearch])
+            
+            
+            if(range.length>0)
             {
-                tempArray += [tempVale];
+                    tempArray += [tempVale];
             }
-            
-            
             
         }
         
@@ -165,17 +198,94 @@ import UIKit
             
             self.reloadData()
         }
-        else{
+        else
+        {
             hideSelf()
         }
         
 
         }
-      else{
+      else
+      {
         hideSelf()
-        }
+    }
         
     
+    }
+    
+    func autoTextFieldEditingDidBegin(textFieldTemp: UITextField){
+        if(autoMultipleSelection.Allow == true)
+        {
+            
+            if(self.textField?.text != nil)
+            {
+                
+                if(self.textField?.text != "")
+                {
+                    let initialString = self.textField?.text as String!
+                    
+                    var initialStringArr = initialString.componentsSeparatedByString(autoMultipleSelection.separatedBy)
+                    
+                    var tempString : String = ""
+                    
+                    for( var i = 0 ; i <= initialStringArr.count-1 ; i++  )
+                    {
+                        
+                        tempString += ("\(initialStringArr[i])" + "\(autoMultipleSelection.separatedBy)")
+                        
+                        self.textField?.text = ""
+                        
+                        self.textField?.text = tempString
+                    }
+                }
+                else{
+                    self.textField?.text = ""
+                }
+                
+         }
+            
+    }
+        
+    }
+    func autoTextFieldEditingDidEnd(textFieldTemp: UITextField){
+        
+        if(autoMultipleSelection.Allow == true)
+        {
+           
+            
+            
+            let initialString = self.textField?.text as String!
+            
+            var initialStringArr = initialString.componentsSeparatedByString(autoMultipleSelection.separatedBy)
+            
+            let lastName: String? = initialStringArr.count > 0 ? initialStringArr[initialStringArr.count-1] : initialStringArr[0]
+            
+            let  currentString = lastName as String!
+           
+            if(currentString == "")
+            {
+                var tempString : String = ""
+                
+                for( var i = 0 ; i < initialStringArr.count-1 ; i++  )
+                {
+                    if(i == initialStringArr.count-2 )
+                    {
+                        tempString += ("\(initialStringArr[i])")
+                    }
+                    else{
+                        tempString += ("\(initialStringArr[i])" + "\(autoMultipleSelection.separatedBy)")
+                    }
+                }
+                
+                self.textField?.text = ""
+               
+                self.textField?.text = tempString
+            }
+            
+        }
+    
+        
+        hideSelf()
     }
 
     //MARK: - UITableViewDataSource
@@ -185,8 +295,11 @@ import UIKit
      }
     
      func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+       
         let cellIdentifier = "autocompleteCellIdentifier"
+        
         var cell = tableView.dequeueReusableCellWithIdentifier(cellIdentifier)
+        
         if cell == nil
         {
             cell = UITableViewCell(style: .Default, reuseIdentifier: cellIdentifier)
@@ -198,25 +311,60 @@ import UIKit
     {
         if(showHighLightedText.show == true)
         {
-            cell?.textLabel?.text = ("\(predictionArray[indexPath.row])")
-            
-            let initialtext =   "\(predictionArray[indexPath.row])"
-            
-           cell?.textLabel?.textColor = showHighLightedText.normalColor
-            
-            let attrString: NSMutableAttributedString = NSMutableAttributedString(string: initialtext)
-            
-            let range: NSRange = (initialtext as NSString).rangeOfString((self.textField?.text!)! , options: [NSStringCompareOptions.CaseInsensitiveSearch])
             
             
-             attrString.addAttribute(NSForegroundColorAttributeName, value: showHighLightedText.HighLightedColor, range: range)
-            
-            
-            cell!.textLabel?.attributedText = attrString
+            if(autoMultipleSelection.Allow == true)
+            {
+                let initialString = self.textField?.text as String!
+               
+                var initialStringArr = initialString.componentsSeparatedByString(autoMultipleSelection.separatedBy)
+                
+                let lastName: String? = initialStringArr.count > 0 ? initialStringArr[initialStringArr.count-1] : initialStringArr[0]
+                
+               let  currentString = lastName as String!
+                
+                
+                cell?.textLabel?.text = ("\(predictionArray[indexPath.row])")
+                
+                let initialtext =   "\(predictionArray[indexPath.row])"
+                
+                cell?.textLabel?.textColor = showHighLightedText.normalColor
+                
+                let attrString: NSMutableAttributedString = NSMutableAttributedString(string: initialtext)
+                
+                let range: NSRange = (initialtext as NSString).rangeOfString(currentString , options: [NSStringCompareOptions.CaseInsensitiveSearch])
+                
+                
+                attrString.addAttribute(NSForegroundColorAttributeName, value: showHighLightedText.HighLightedColor, range: range)
+                
+                
+                cell!.textLabel?.attributedText = attrString
+                
+                
+            }
+            else{
+                cell?.textLabel?.text = ("\(predictionArray[indexPath.row])")
+                
+                let initialtext =   "\(predictionArray[indexPath.row])"
+                
+                cell?.textLabel?.textColor = showHighLightedText.normalColor
+                
+                let attrString: NSMutableAttributedString = NSMutableAttributedString(string: initialtext)
+                
+                let range: NSRange = (initialtext as NSString).rangeOfString((self.textField?.text!)! , options: [NSStringCompareOptions.CaseInsensitiveSearch])
+                
+                
+                attrString.addAttribute(NSForegroundColorAttributeName, value: showHighLightedText.HighLightedColor, range: range)
+                
+                
+                cell!.textLabel?.attributedText = attrString
+            }
+           
         }
         
         else{
             cell?.textLabel?.text = ("\(predictionArray[indexPath.row])")
+           
             cell?.textLabel?.textColor = showHighLightedText.normalColor
         }
      
@@ -224,7 +372,6 @@ import UIKit
     else
     {
         
-
     }
        
         return cell!
@@ -234,19 +381,40 @@ import UIKit
     
      func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
 
-        
-        self.textField?.text = ("\(self.predictionArray[indexPath.row])")
-         hideSelf()
-        
+        if(autoMultipleSelection.Allow == true)
+        {
+            var tempString : String = ""
+            
+            let initialString = self.textField?.text as String!
+           
+            var initialStringArr = initialString.componentsSeparatedByString(autoMultipleSelection.separatedBy)
+          
+            self.textField?.text = ""
 
+            for( var i = 0 ; i <= initialStringArr.count-2 ; i++  )
+            {
+                tempString += ("\(initialStringArr[i])" + "\(autoMultipleSelection.separatedBy)")
+            }
+            
+             tempString += "\(self.predictionArray[indexPath.row])" + " \(autoMultipleSelection.separatedBy)"
+            
+            self.textField?.text = tempString
+       
+        }
+        else
+        {
+       
+            self.textField?.text = ("\(self.predictionArray[indexPath.row])")
         
-        
+            hideSelf()
+        }
+    
     }
     
     
-     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat
+     {
+      
         return 25
     }
-    
-    
 }
