@@ -33,7 +33,8 @@ class ViewController: UIViewController,UITextFieldDelegate,AutoCompleteTableView
         auto.autoCompleteTableViewDelegate = self;
         auto.setScrollView(self.scrollView)
         auto.showHighLightedText = (true,UIColor.redColor(), UIColor.grayColor())
-        auto.autoMultipleSelection=(true,",")
+        auto.autoMultipleSelection.Allow = true
+        auto.autoMultipleSelection.range = 2
   
         
     return auto
@@ -87,6 +88,10 @@ class ViewController: UIViewController,UITextFieldDelegate,AutoCompleteTableView
         
         return fritNameArr
     }
-    
+    @objc   func  autoCompleteTableView(tableView: AutoCompleteTableView, textField: String , rangeExceed: Bool)
+    {
+        
+      print("Please Check Range ")
+    }
 }
 

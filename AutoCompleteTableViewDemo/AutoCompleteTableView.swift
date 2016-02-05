@@ -10,6 +10,7 @@ import UIKit
 
  @objc protocol AutoCompleteTableViewDelegate {
     optional func  autoCompleteTableView(tableView: AutoCompleteTableView, didAddItem: String) -> Array<String>
+    optional func  autoCompleteTableView(tableView: AutoCompleteTableView, textField: String , rangeExceed: Bool)
 }
 
 
@@ -24,9 +25,9 @@ import UIKit
           private var kvoContextOfScrollView: UInt8 = 1
     private var scrollViewOfTextField : UIScrollView?
     
-    var showHighLightedText :(show:Bool , HighLightedColor : UIColor , normalColor : UIColor) = (true, UIColor.blueColor() ,UIColor.blackColor())
+    var showHighLightedText :(show:Bool , HighLightedColor : UIColor , normalColor : UIColor) = (false, UIColor.blueColor() ,UIColor.blackColor())
     
-    var autoMultipleSelection : (Allow:Bool , separatedBy: String) = (true,",")
+    var autoMultipleSelection : (Allow:Bool , separatedBy: String , range : Int) = (false,",",Int.max)
     
     var multipleSetioinArr : [String] = []
     
@@ -396,10 +397,20 @@ import UIKit
                 tempString += ("\(initialStringArr[i])" + "\(autoMultipleSelection.separatedBy)")
             }
             
-             tempString += "\(self.predictionArray[indexPath.row])" + " \(autoMultipleSelection.separatedBy)"
+            if(initialStringArr.count <= autoMultipleSelection.range)
+            {
+                tempString += "\(self.predictionArray[indexPath.row])" + " \(autoMultipleSelection.separatedBy)"
+                
+                self.textField?.text = tempString
+                
+            }
+            else
+            {
+                autoCompleteTableViewDelegate?.autoCompleteTableView!(self,textField: tempString , rangeExceed: true)
+                 self.textField?.text = tempString
+            }
             
-            self.textField?.text = tempString
-       
+            
         }
         else
         {
