@@ -48,12 +48,14 @@ class ViewController: UIViewController,UITextFieldDelegate,AutoCompleteTableView
       fritNameArr += [ "Apple"," Apricot"," Avocado","Banana","ilberry","Blackberry","Blackcurrant", "Blueberry", "Boysenberry", "Cantaloupe"," cucumber"," Currant"," Cherry"," Cherimoya"," Cloudberry"," Coconut", "Cranberry"," Damson", "Date"," Dragonfruit", "Durian","Elderberry","Feijoa","Fig", "Goji ber"]
     
     
+        
+         animalNamesTF.addTarget(self.autoCompleteTVAnimalsNames, action: "autoTextFieldValueChanged:", forControlEvents: UIControlEvents.EditingChanged)
         // set observer on textField in tableviewClass
         fruitNameTF.addTarget(self.autoCompleteTVFruitNames, action: "autoTextFieldValueChanged:", forControlEvents: UIControlEvents.EditingChanged)
         
        
             
-         animalNamesTF.addTarget(self.autoCompleteTVAnimalsNames, action: "textFieldValueChanged:", forControlEvents: UIControlEvents.EditingChanged)
+        
    
     }
 

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="8191" systemVersion="14F27" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="AhP-vo-DwO">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="14F27" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="AhP-vo-DwO">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8154"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
     </dependencies>
     <scenes>
         <!--View Controller-->
@@ -37,7 +37,7 @@
                                                 </connections>
                                             </textField>
                                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="line" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Jgm-HV-Sy0">
-                                                <rect key="frame" x="154" y="495" width="293" height="30"/>
+                                                <rect key="frame" x="154" y="233" width="293" height="30"/>
                                                 <color key="backgroundColor" red="0.98902070519999996" green="0.73647836860000004" blue="0.55742704239999996" alpha="1" colorSpace="calibratedRGB"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="30" id="BzV-Mg-A8E"/>
@@ -55,7 +55,7 @@
                                             <constraint firstItem="u5d-CT-5p2" firstAttribute="centerX" secondItem="MyY-WN-hUk" secondAttribute="centerX" id="Gh3-Yi-p5v"/>
                                             <constraint firstItem="Jgm-HV-Sy0" firstAttribute="centerX" secondItem="MyY-WN-hUk" secondAttribute="centerX" id="Zd0-o6-ulj"/>
                                             <constraint firstAttribute="height" constant="600" id="atK-3m-Jh2"/>
-                                            <constraint firstAttribute="bottom" secondItem="Jgm-HV-Sy0" secondAttribute="bottom" constant="75" id="pq4-ii-chk"/>
+                                            <constraint firstAttribute="bottom" secondItem="Jgm-HV-Sy0" secondAttribute="bottom" constant="337" id="pq4-ii-chk"/>
                                             <constraint firstItem="u5d-CT-5p2" firstAttribute="top" secondItem="MyY-WN-hUk" secondAttribute="top" constant="35" id="tT3-N4-Nwk"/>
                                         </constraints>
                                     </view>
