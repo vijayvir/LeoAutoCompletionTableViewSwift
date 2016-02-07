@@ -2,7 +2,10 @@
 AutoCompletionTableView in swift with several  features.
 
 
-lazy  var autoCompleteTVFruitNames : AutoCompleteTableView = self.initAutoCompleteTableView(self.fruitNameTF ,array: self.fritNameArr)
+Basic use .... 
+
+{
+  lazy  var autoCompleteTVFruitNames : AutoCompleteTableView = self.initAutoCompleteTableView(self.fruitNameTF ,array: self.fritNameArr)
   func initAutoCompleteTableView(textField: UITextField , array : Array<String>) -> AutoCompleteTableView
     {
         
