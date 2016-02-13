@@ -17,13 +17,19 @@ And here's some code! :+1: with example
         
         let auto : AutoCompleteTableView  = AutoCompleteTableView(textfield: textField, tfFrame: self.view.convertRect(textField.frame, fromView: textField.superview), parentViewController: self)
             auto.predictionArray = array
+            // Set Table view Properties
         auto.layer.borderColor = UIColor.grayColor().CGColor
         auto.layer.borderWidth = 2.0;
         auto.layer.cornerRadius = 12.0;
+        //  Set Delegate
         auto.autoCompleteTableViewDelegate = self;
+        // Set Scroll View 
         auto.setScrollView(self.scrollView)
+        // Set HighLightedText Color  
         auto.showHighLightedText = (true,UIColor.redColor(), UIColor.grayColor())
+       // Set MultipleSelection Color  
         auto.autoMultipleSelection.Allow = true
+           // Set MultipleSelection range  
         auto.autoMultipleSelection.range = 2
     
         
@@ -50,3 +56,4 @@ And here's some code! :+1: with example
       print("Please Check Range ")
     }
 ```
+![ScreenShot](https://github.com/vijayvir/LeoAutoCompletionTableViewSwift/blob/master/AutoCompleteTableViewDemo/DemoImage.png)
