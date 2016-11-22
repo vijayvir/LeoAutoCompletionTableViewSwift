@@ -19,20 +19,21 @@ class ViewController: UIViewController,UITextFieldDelegate,AutoCompleteTableView
     @IBOutlet weak var scrollView: UIScrollView!
     var fritNameArr : [String] = []
     
-    lazy  var autoCompleteTVFruitNames : AutoCompleteTableView = self.initAutoCompleteTableView(self.fruitNameTF ,array: self.fritNameArr)
+    lazy  var autoCompleteTVFruitNames : AutoCompleteTableView
+        = self.initAutoCompleteTableView(self.fruitNameTF ,array: self.fritNameArr)
     lazy  var autoCompleteTVAnimalsNames : AutoCompleteTableView = self.initAutoCompleteTableView(self.animalNamesTF,array: self.fritNameArr)
     
-    func initAutoCompleteTableView(textField: UITextField , array : Array<String>) -> AutoCompleteTableView
+    func initAutoCompleteTableView(_ textField: UITextField , array : Array<String>) -> AutoCompleteTableView
     {
         
-        let auto : AutoCompleteTableView  = AutoCompleteTableView(textfield: textField, tfFrame: self.view.convertRect(textField.frame, fromView: textField.superview), parentViewController: self)
+        let auto : AutoCompleteTableView  = AutoCompleteTableView(textfield: textField, tfFrame: self.view.convert(textField.frame, from: textField.superview), parentViewController: self)
             auto.predictionArray = array
-        auto.layer.borderColor = UIColor.grayColor().CGColor
+        auto.layer.borderColor = UIColor.gray.cgColor
         auto.layer.borderWidth = 2.0;
         auto.layer.cornerRadius = 12.0;
         auto.autoCompleteTableViewDelegate = self;
         auto.setScrollView(self.scrollView)
-        auto.showHighLightedText = (true,UIColor.redColor(), UIColor.grayColor())
+        auto.showHighLightedText = (true,UIColor.red, UIColor.gray)
         auto.autoMultipleSelection.Allow = true
         auto.autoMultipleSelection.range = 2
   
@@ -49,9 +50,9 @@ class ViewController: UIViewController,UITextFieldDelegate,AutoCompleteTableView
     
     
         
-         animalNamesTF.addTarget(self.autoCompleteTVAnimalsNames, action: "autoTextFieldValueChanged:", forControlEvents: UIControlEvents.EditingChanged)
+         animalNamesTF.addTarget(self.autoCompleteTVAnimalsNames, action: "autoTextFieldValueChanged:", for: UIControlEvents.editingChanged)
         // set observer on textField in tableviewClass
-        fruitNameTF.addTarget(self.autoCompleteTVFruitNames, action: "autoTextFieldValueChanged:", forControlEvents: UIControlEvents.EditingChanged)
+        fruitNameTF.addTarget(self.autoCompleteTVFruitNames, action: "autoTextFieldValueChanged:", for: UIControlEvents.editingChanged)
         
        
             
@@ -59,7 +60,7 @@ class ViewController: UIViewController,UITextFieldDelegate,AutoCompleteTableView
    
     }
 
-    override  func viewWillAppear(animated: Bool)
+    override  func viewWillAppear(_ animated: Bool)
     {
         super.viewWillAppear(true)
     }
@@ -75,7 +76,7 @@ class ViewController: UIViewController,UITextFieldDelegate,AutoCompleteTableView
     
    
     //MARK: Textfield Delegate
-     func textFieldShouldReturn(textField: UITextField) -> Bool
+     func textFieldShouldReturn(_ textField: UITextField) -> Bool
      {
         textField.resignFirstResponder()
         
@@ -85,12 +86,12 @@ class ViewController: UIViewController,UITextFieldDelegate,AutoCompleteTableView
     
     //MARK: -  AutoCompleteTableView Delegate
     
-  @objc   func  autoCompleteTableView(tableView: AutoCompleteTableView, didAddItem: String) -> Array<String>
+  @objc   func  autoCompleteTableView(_ tableView: AutoCompleteTableView, didAddItem: String) -> Array<String>
     {
         
         return fritNameArr
     }
-    @objc   func  autoCompleteTableView(tableView: AutoCompleteTableView, textField: String , rangeExceed: Bool)
+    @objc   func  autoCompleteTableView(_ tableView: AutoCompleteTableView, textField: String , rangeExceed: Bool)
     {
         
       print("Please Check Range ")

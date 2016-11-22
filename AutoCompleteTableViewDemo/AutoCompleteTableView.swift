@@ -7,10 +7,34 @@
 //
 
 import UIKit
+// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
+// Consider refactoring the code to use the non-optional operators.
+fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l < r
+  case (nil, _?):
+    return true
+  default:
+    return false
+  }
+}
+
+// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
+// Consider refactoring the code to use the non-optional operators.
+fileprivate func > <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l > r
+  default:
+    return rhs < lhs
+  }
+}
+
 
  @objc protocol AutoCompleteTableViewDelegate {
-    optional func  autoCompleteTableView(tableView: AutoCompleteTableView, didAddItem: String) -> Array<String>
-    optional func  autoCompleteTableView(tableView: AutoCompleteTableView, textField: String , rangeExceed: Bool)
+    @objc optional func  autoCompleteTableView(_ tableView: AutoCompleteTableView, didAddItem: String) -> Array<String>
+    @objc optional func  autoCompleteTableView(_ tableView: AutoCompleteTableView, textField: String , rangeExceed: Bool)
 }
 
 
@@ -22,10 +46,10 @@ import UIKit
     var predictionArray : [String] = []
     
     var textField : UITextField?
-          private var kvoContextOfScrollView: UInt8 = 1
-    private var scrollViewOfTextField : UIScrollView?
+          fileprivate var kvoContextOfScrollView: UInt8 = 1
+    fileprivate var scrollViewOfTextField : UIScrollView?
     
-    var showHighLightedText :(show:Bool , HighLightedColor : UIColor , normalColor : UIColor) = (false, UIColor.blueColor() ,UIColor.blackColor())
+    var showHighLightedText :(show:Bool , HighLightedColor : UIColor , normalColor : UIColor) = (false, UIColor.blue ,UIColor.black)
     
     var autoMultipleSelection : (Allow:Bool , separatedBy: String , range : Int) = (false,",",Int.max)
     
@@ -37,7 +61,7 @@ import UIKit
     override init(frame: CGRect, style: UITableViewStyle)
     {
     
-        super.init(frame: frame, style: UITableViewStyle.Plain)
+        super.init(frame: frame, style: UITableViewStyle.plain)
         
         
     }
@@ -45,33 +69,33 @@ import UIKit
    
     init(textfield: UITextField? , tfFrame: CGRect? , parentViewController : UIViewController? )
     {
-        let frame : CGRect = CGRectMake(10, tfFrame!.origin.y + tfFrame!.size.height , UIScreen.mainScreen().bounds.size.width - 20 , 90)
+        let frame : CGRect = CGRect(x: 10, y: tfFrame!.origin.y + tfFrame!.size.height , width: UIScreen.main.bounds.size.width - 20 , height: 90)
         
-        super.init(frame: frame, style: UITableViewStyle.Plain)
+        super.init(frame: frame, style: UITableViewStyle.plain)
         
-        let footView : UIView = UIView(frame: CGRectMake(10, 0, UIScreen.mainScreen().bounds.size.width - 20 , 1))
-            footView.backgroundColor = UIColor.clearColor()
+        let footView : UIView = UIView(frame: CGRect(x: 10, y: 0, width: UIScreen.main.bounds.size.width - 20 , height: 1))
+            footView.backgroundColor = UIColor.clear
     
         self.tableFooterView = footView
         //self.hidden = true;
         parentViewController?.view.addSubview(self)
         
-        self.backgroundColor = UIColor.whiteColor()
+        self.backgroundColor = UIColor.white
         
         self.delegate = self;
         
         self.dataSource = self;
         
-        self.scrollEnabled = true;
+        self.isScrollEnabled = true;
         
         // turn off standard correction
-        textfield!.autocorrectionType = UITextAutocorrectionType.No;
+        textfield!.autocorrectionType = UITextAutocorrectionType.no;
         
         
      
-        textfield!.addTarget(self , action: "autoTextFieldEditingDidEnd:", forControlEvents: UIControlEvents.EditingDidEnd)
+        textfield!.addTarget(self , action: #selector(AutoCompleteTableView.autoTextFieldEditingDidEnd(_:)), for: UIControlEvents.editingDidEnd)
        
-        textfield!.addTarget(self , action: "autoTextFieldEditingDidBegin:", forControlEvents: UIControlEvents.EditingDidBegin)
+        textfield!.addTarget(self , action: #selector(AutoCompleteTableView.autoTextFieldEditingDidBegin(_:)), for: UIControlEvents.editingDidBegin)
         
          hideSelf()
     }
@@ -92,7 +116,7 @@ import UIKit
     
     //MARK: -  Helper Function
     
-      override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>)
+      override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?)
       {
         if context == &kvoContextOfScrollView
         {
@@ -111,40 +135,40 @@ import UIKit
     
     
  
-    func setScrollView(scrollView : UIScrollView?){
+    func setScrollView(_ scrollView : UIScrollView?){
        
         self.scrollViewOfTextField = scrollView
        
         self.scrollViewOfTextField?.addObserver(self, forKeyPath: "contentOffset",
-            options:[NSKeyValueObservingOptions.New,NSKeyValueObservingOptions.Old], context: &kvoContextOfScrollView)
+            options:[NSKeyValueObservingOptions.new,NSKeyValueObservingOptions.old], context: &kvoContextOfScrollView)
         
     }
     
     func updateFrameOfTableView()
     {
-        let frame : CGRect = (textField!.window?.subviews[0].convertRect(textField!.frame, fromView: self.textField!.superview))!
+        let frame : CGRect = (textField!.window?.subviews[0].convert(textField!.frame, from: self.textField!.superview))!
        
-        self.frame = CGRectMake(10, frame.origin.y + frame.size.height, (UIScreen.mainScreen().bounds.size.width - 20), 90);
+        self.frame = CGRect(x: 10, y: frame.origin.y + frame.size.height, width: (UIScreen.main.bounds.size.width - 20), height: 90);
      
     }
     func showSelf()
     {
-        self.hidden = false;
+        self.isHidden = false;
     }
     
     func hideSelf()
     {
-        self.hidden = true;
+        self.isHidden = true;
     }
     
     //MARK: - TextField Delegate
-    func autoTextFieldValueChanged(textFieldTemp: UITextField)
+    func autoTextFieldValueChanged(_ textFieldTemp: UITextField)
     {
         self.textField = textFieldTemp
         
-        let frame : CGRect = (textFieldTemp.window?.subviews[0].convertRect(textFieldTemp.frame, fromView: textFieldTemp.superview))!
+        let frame : CGRect = (textFieldTemp.window?.subviews[0].convert(textFieldTemp.frame, from: textFieldTemp.superview))!
         
-        self.frame = CGRectMake(10, frame.origin.y + frame.size.height, (UIScreen.mainScreen().bounds.size.width - 20), 90);
+        self.frame = CGRect(x: 10, y: frame.origin.y + frame.size.height, width: (UIScreen.main.bounds.size.width - 20), height: 90);
         
         
        var currentString  = textFieldTemp.text as String!
@@ -154,9 +178,9 @@ import UIKit
             
             let initialString = currentString as String!
             
-            var initialStringArr = initialString.componentsSeparatedByString(autoMultipleSelection.separatedBy)
+            var initialStringArr = initialString?.components(separatedBy: autoMultipleSelection.separatedBy)
             
-            let lastName: String? = initialStringArr.count > 0 ? initialStringArr[initialStringArr.count-1] : initialStringArr[0]
+            let lastName: String? = (initialStringArr?.count)! > 0 ? initialStringArr?[(initialStringArr?.count)!-1] : initialStringArr?[0]
             
              currentString = lastName as String!
          
@@ -182,7 +206,7 @@ import UIKit
          
             
             
-             let range: NSRange = (tempVale as NSString).rangeOfString(currentString , options: [NSStringCompareOptions.CaseInsensitiveSearch])
+             let range: NSRange = (tempVale as NSString).range(of: currentString! , options: [NSString.CompareOptions.caseInsensitive])
             
             
             if(range.length>0)
@@ -214,7 +238,7 @@ import UIKit
     
     }
     
-    func autoTextFieldEditingDidBegin(textFieldTemp: UITextField){
+    func autoTextFieldEditingDidBegin(_ textFieldTemp: UITextField){
         if(autoMultipleSelection.Allow == true)
         {
             
@@ -225,14 +249,14 @@ import UIKit
                 {
                     let initialString = self.textField?.text as String!
                     
-                    var initialStringArr = initialString.componentsSeparatedByString(autoMultipleSelection.separatedBy)
+                    var initialStringArr = initialString?.components(separatedBy: autoMultipleSelection.separatedBy)
                     
                     var tempString : String = ""
                     
-                    for( var i = 0 ; i <= initialStringArr.count-1 ; i++  )
+                    for( var i = 0 ; i <= (initialStringArr?.count)!-1 ; i += 1  )
                     {
                         
-                        tempString += ("\(initialStringArr[i])" + "\(autoMultipleSelection.separatedBy)")
+                        tempString += ("\(initialStringArr?[i])" + "\(autoMultipleSelection.separatedBy)")
                         
                         self.textField?.text = ""
                         
@@ -248,7 +272,7 @@ import UIKit
     }
         
     }
-    func autoTextFieldEditingDidEnd(textFieldTemp: UITextField){
+    func autoTextFieldEditingDidEnd(_ textFieldTemp: UITextField){
         
         if(autoMultipleSelection.Allow == true)
         {
@@ -259,7 +283,7 @@ import UIKit
           {
             return
             }
-            var initialStringArr = initialString.componentsSeparatedByString(autoMultipleSelection.separatedBy)
+            var initialStringArr = initialString.components(separatedBy: autoMultipleSelection.separatedBy)
             
             let lastName: String? = initialStringArr.count > 0 ? initialStringArr[initialStringArr.count-1] : initialStringArr[0]
             
@@ -269,7 +293,7 @@ import UIKit
             {
                 var tempString : String = ""
                 
-                for( var i = 0 ; i < initialStringArr.count-1 ; i++  )
+                for( i in 0  ..< initialStringArr.count-1  )
                 {
                     if(i == initialStringArr.count-2 )
                     {
@@ -292,20 +316,20 @@ import UIKit
     }
 
     //MARK: - UITableViewDataSource
-     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int
+     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
      {
         return predictionArray.count
      }
     
-     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
        
         let cellIdentifier = "autocompleteCellIdentifier"
         
-        var cell = tableView.dequeueReusableCellWithIdentifier(cellIdentifier)
+        var cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier)
         
         if cell == nil
         {
-            cell = UITableViewCell(style: .Default, reuseIdentifier: cellIdentifier)
+            cell = UITableViewCell(style: .default, reuseIdentifier: cellIdentifier)
         }
         
         
@@ -320,9 +344,9 @@ import UIKit
             {
                 let initialString = self.textField?.text as String!
                
-                var initialStringArr = initialString.componentsSeparatedByString(autoMultipleSelection.separatedBy)
+                var initialStringArr = initialString?.components(separatedBy: autoMultipleSelection.separatedBy)
                 
-                let lastName: String? = initialStringArr.count > 0 ? initialStringArr[initialStringArr.count-1] : initialStringArr[0]
+                let lastName: String? = (initialStringArr?.count)! > 0 ? initialStringArr?[(initialStringArr?.count)!-1] : initialStringArr?[0]
                 
                let  currentString = lastName as String!
                 
@@ -335,7 +359,7 @@ import UIKit
                 
                 let attrString: NSMutableAttributedString = NSMutableAttributedString(string: initialtext)
                 
-                let range: NSRange = (initialtext as NSString).rangeOfString(currentString , options: [NSStringCompareOptions.CaseInsensitiveSearch])
+                let range: NSRange = (initialtext as NSString).range(of: currentString! , options: [NSString.CompareOptions.caseInsensitive])
                 
                 
                 attrString.addAttribute(NSForegroundColorAttributeName, value: showHighLightedText.HighLightedColor, range: range)
@@ -354,7 +378,7 @@ import UIKit
                 
                 let attrString: NSMutableAttributedString = NSMutableAttributedString(string: initialtext)
                 
-                let range: NSRange = (initialtext as NSString).rangeOfString((self.textField?.text!)! , options: [NSStringCompareOptions.CaseInsensitiveSearch])
+                let range: NSRange = (initialtext as NSString).range(of: (self.textField?.text!)! , options: [NSString.CompareOptions.caseInsensitive])
                 
                 
                 attrString.addAttribute(NSForegroundColorAttributeName, value: showHighLightedText.HighLightedColor, range: range)
@@ -382,7 +406,7 @@ import UIKit
     
     //MARK: - UITableViewDelegate
     
-     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 
         if(autoMultipleSelection.Allow == true)
         {
@@ -390,16 +414,16 @@ import UIKit
             
             let initialString = self.textField?.text as String!
            
-            var initialStringArr = initialString.componentsSeparatedByString(autoMultipleSelection.separatedBy)
+            var initialStringArr = initialString?.components(separatedBy: autoMultipleSelection.separatedBy)
           
             self.textField?.text = ""
 
-            for( var i = 0 ; i <= initialStringArr.count-2 ; i++  )
+            for( var i = 0 ; i <= (initialStringArr?.count)!-2 ; i += 1  )
             {
-                tempString += ("\(initialStringArr[i])" + "\(autoMultipleSelection.separatedBy)")
+                tempString += ("\(initialStringArr?[i])" + "\(autoMultipleSelection.separatedBy)")
             }
             
-            if(initialStringArr.count <= autoMultipleSelection.range)
+            if((initialStringArr?.count)! <= autoMultipleSelection.range)
             {
                 tempString += "\(self.predictionArray[indexPath.row])" + " \(autoMultipleSelection.separatedBy)"
                 
@@ -425,7 +449,7 @@ import UIKit
     }
     
     
-     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat
+     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat
      {
       
         return 25
